@@ -1,0 +1,53 @@
+{
+  "name": "tswc",
+  "version": "1.0.0",
+  "description": "Compile your TypeScript with tsconfig.json using swc",
+  "bin": "dist/cli.js",
+  "scripts": {
+    "build": "swc src -d dist",
+    "pretest": "npm run build",
+    "prepublishOnly": "npm run build",
+    "test": "tap --ts",
+    "prepare": "npx lint-staged"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Songkeys/tswc.git"
+  },
+  "keywords": [
+    "swc",
+    "tsconfig",
+    "compiler",
+    "typescript"
+  ],
+  "author": "Songkeys",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Songkeys/tswc/issues"
+  },
+  "homepage": "https://github.com/Songkeys/tswc#readme",
+  "dependencies": {
+    "@swc/cli": "^0.1.49",
+    "cac": "^6.7.3",
+    "tsconfig-to-swcconfig": "^1.0.1"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.2.80",
+    "@types/node": "^16.6.1",
+    "@types/tap": "^15.0.5",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2",
+    "tap": "^15.0.9",
+    "ts-node": "^10.2.1"
+  },
+  "peerDependencies": {
+    "@swc/core": ">= 1.2.58"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}
