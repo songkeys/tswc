@@ -1,6 +1,6 @@
 {
   "name": "tswc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Compile your TypeScript with tsconfig.json using swc",
   "bin": "dist/cli.js",
   "scripts": {
@@ -42,7 +42,8 @@
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "tap": "^15.0.9",
-    "ts-node": "^10.2.1"
+    "ts-node": "^10.2.1",
+    "typescript": "^4.3.5"
   },
   "peerDependencies": {
     "@swc/core": ">= 1.2.58"

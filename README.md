@@ -10,7 +10,7 @@ Compile your TypeScript with tsconfig.json using [swc](https://swc.rs)
 ```bash
 npm install tswc @swc/core -D
 # Or Yarn
-yarn add tsup @swc/core --dev
+yarn add tswc @swc/core --dev
 ```
 
 ## Usage
@@ -34,6 +34,24 @@ tswc -- DIR -d dir
 ```
 
 See more about how to use [swc cli](https://swc.rs/docs/usage-swc-cli).
+
+You can change your build script in "package.json" as:
+
+```json
+"build": "tswc -- src -D dist",
+```
+
+Now you can run `npm run build` to build.
+
+## Notice
+
+Only a subgroup of fields of tsconfig is supported currently. This is done with [tsconfig-to-swcconfig](https://github.com/Songkeys/tsconfig-to-swcconfig). This means that some tsc features may be missing when compiling with this.
+
+If you want to know what swc config is exactly used, you can use `--debug` to inspect:
+
+```bash
+tswc --debug -- [other options...]
+```
 
 ## Advanced Options
 
