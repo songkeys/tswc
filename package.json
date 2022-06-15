@@ -1,6 +1,6 @@
 {
   "name": "tswc",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "Compile your TypeScript with tsconfig.json using swc",
   "bin": "dist/cli.js",
   "scripts": {
@@ -32,7 +32,7 @@
   "dependencies": {
     "@swc/cli": "^0.1.49",
     "cac": "^6.7.3",
-    "tsconfig-to-swcconfig": "^1.0.1"
+    "tsconfig-to-swcconfig": "^2.0.1"
   },
   "devDependencies": {
     "@swc/core": "^1.2.80",
