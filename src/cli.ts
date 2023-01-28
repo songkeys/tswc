@@ -29,7 +29,7 @@ cli
       const swcrc = convert(tsconfig, process.cwd(), oSwcOptions)
       if (debug) {
         console.log('[debug] swcrc:')
-        console.log(swcrc)
+        console.log(JSON.stringify(swcrc, null, 2))
       }
       fs.writeFileSync(SWCRC_PATH, JSON.stringify(swcrc, null, 2))
 
