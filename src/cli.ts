@@ -28,7 +28,7 @@ cli
       // convert tsconfig.json to swcrc
       const swcrc = convert(tsconfig, process.cwd(), oSwcOptions)
       if (debug) {
-        console.log('[debug] swcrc:')
+        console.err('[debug] swcrc:')
         console.log(JSON.stringify(swcrc, null, 2))
       }
       fs.writeFileSync(SWCRC_PATH, JSON.stringify(swcrc, null, 2))
@@ -37,7 +37,7 @@ cli
       const swcBin = require.resolve('.bin/swc')
       const swcArgs = [file, ...args['--'], '--config-file', SWCRC_PATH]
       if (debug) {
-        console.log(`> swc ${swcArgs.join(' ')}`)
+        console.err(`> swc ${swcArgs.join(' ')}`)
       }
       spawnSync(swcBin, swcArgs, {
         stdio: 'inherit',
