@@ -8,16 +8,46 @@ import { parse } from 'jsonc-parser'
 
 const cli = cac('tswc')
 
+// These are swc cli arguments that we are also tapping in the wrapper
+const expectedSwcCli = cac('swc')
+expectedSwcCli.option(
+  '--config-file <configFile>',
+  'swc config file - override tsconfig',
+)
+
 cli
   .command('[file]', 'file or directory to build')
-  .allowUnknownOptions()
   .option('--tsconfig <filename>', 'the filename of tsconfig', {
     default: 'tsconfig.json',
   })
   .option('--debug', 'output the final swc config', { default: false })
-  .action((file = '', { tsconfig, debug, configFile = '.swcrc', ...args }) => {
+  .option(
+    '-- <swc cli args>',
+    'the remaining swc arguments like you would normally call',
+  )
+  .action((file = '', options: any) => {
+    const { tsconfig, debug } = options
+    const _swcArgs = options['--']
+    // parse shared swc args here
+    const swcParsedArgs = expectedSwcCli.parse(_swcArgs) as {
+      options: {
+        configFile?: string
+      }
+    }
+    const { configFile } = swcParsedArgs.options
+
+    let oSwcrcPath: string
+    if (configFile) {
+      oSwcrcPath = path.resolve(process.cwd(), configFile)
+      if (!fs.existsSync(oSwcrcPath)) {
+        throw new Error(
+          `Invalid option: --config-file. Could not find file: ${oSwcrcPath}`,
+        )
+      }
+    } else {
+      oSwcrcPath = path.resolve(process.cwd(), '.swcrc')
+    }
     // read .swcrc
-    const oSwcrcPath = path.resolve(process.cwd(), configFile)
     let oSwcOptions = fs.existsSync(oSwcrcPath)
       ? parse(fs.readFileSync(oSwcrcPath, 'utf8'))
       : {}
@@ -36,7 +66,7 @@ cli
 
       // compile
       const swcBin = require.resolve('.bin/swc')
-      const swcArgs = [file, ...args['--'], '--config-file', SWCRC_PATH]
+      const swcArgs = [file, ..._swcArgs, '--config-file', SWCRC_PATH]
       if (debug) {
         console.log(`> swc ${swcArgs.join(' ')}`)
       }
