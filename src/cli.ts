@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
 import { cac } from 'cac'
 import { convert } from 'tsconfig-to-swcconfig'
-import { spawnSync } from 'child_process'
+import { spawnSync } from 'node:child_process'
 import { parse } from 'jsonc-parser'
 
 const cli = cac('tswc')
