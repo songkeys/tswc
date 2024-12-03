@@ -1,3 +1,4 @@
 {
+  // This is a general comment like .swcrc supports
   "minify": true
 }

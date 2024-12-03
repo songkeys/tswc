@@ -4,6 +4,7 @@ import fs from 'fs'
 import { cac } from 'cac'
 import { convert } from 'tsconfig-to-swcconfig'
 import { spawnSync } from 'child_process'
+import { parse } from 'jsonc-parser'
 
 const cli = cac('tswc')
 
@@ -18,7 +19,7 @@ cli
     // read .swcrc
     const oSwcrcPath = path.resolve(process.cwd(), configFile)
     let oSwcOptions = fs.existsSync(oSwcrcPath)
-      ? JSON.parse(fs.readFileSync(oSwcrcPath, 'utf8'))
+      ? parse(fs.readFileSync(oSwcrcPath, 'utf8'))
       : {}
 
     const SWCRC_FILENAME =

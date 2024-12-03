@@ -32,6 +32,7 @@
   "dependencies": {
     "@swc/cli": "^0.1.62",
     "cac": "^6.7.14",
+    "jsonc-parser": "^3.3.1",
     "tsconfig-to-swcconfig": "^2.2.0"
   },
   "devDependencies": {
