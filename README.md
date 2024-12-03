@@ -43,6 +43,47 @@ You can change your build script in "package.json" as:
 
 Now you can run `npm run build` to build.
 
+### About .swcrc
+
+tswc will always merge your swc configuration file on top of any of the options that were inferred from your tsconfig.
+By default, swc and tswc will look for a .swcrc file and tolerate if there is none found.  However, tswc will respect
+any `--config-file` option that you provide to swc and will even make sure to throw an error if the file is missing.
+
+```shell
+# Example of using a .development.swcrc file to override the base config from tsconfig
+tswc -- --config-file .development.swcrc
+```
+
+As a naive example, if you had a tsconfig.json file that used commonjs compilation, but also wanted to compile an esm version,
+you could set up a .esm.swcrc so that:
+
+```json
+// tsconfig.json
+{
+  "module": "commonjs",
+  "moduleResolution": "node",
+  // Other options
+}
+
+// .esm.swcrc
+{
+  "module": {
+    // This overrides the module "commonjs" of tsconfig to es6
+    "type": "es6"
+  }
+}
+```
+
+The corresponding commands for this project might be something like:
+
+```shell
+# Creates esm syntax compiled files
+tswc -- src -d dist/esm --config-file .esm.swcrc
+
+# Creates commonjs syntax compiled files
+tswc -- src -d dist/esm
+```
+
 ## Notice
 
 Only a subgroup of fields of tsconfig is supported currently. This is done with [tsconfig-to-swcconfig](https://github.com/Songkeys/tsconfig-to-swcconfig). This means that some tsc features may be missing when compiling with this.
