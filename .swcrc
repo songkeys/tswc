@@ -1,0 +1,12 @@
+{
+    "jsc": {
+      "loose": true,
+      "minify": {
+        "compress": {
+          "unused": true
+        },
+        "mangle": true
+      }
+    },
+    "minify": true
+  }
