@@ -4,11 +4,13 @@
   "description": "Compile your TypeScript with tsconfig.json using swc",
   "bin": "dist/cli.js",
   "scripts": {
-    "build": "swc src -d dist",
+    "typeCheck": "npx tsc --noEmit",
+    "build": "npm run typeCheck && npm run tswc -- src -d dist --strip-leading-paths",
     "pretest": "npm run build",
     "prepublishOnly": "npm run build",
     "test": "vitest run",
-    "prepare": "npx lint-staged"
+    "prepare": "npx lint-staged",
+    "tswc": "ts-node src/cli.ts --"
   },
   "files": [
     "dist"
