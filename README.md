@@ -8,9 +8,9 @@ Compile your TypeScript with tsconfig.json using [swc](https://swc.rs)
 ## Install
 
 ```bash
-npm install tswc @swc/core -D
+npm install tswc @swc/core @swc/cli -D
 # Or Yarn
-yarn add tswc @swc/core --dev
+yarn add tswc @swc/core @swc/cli --dev
 ```
 
 ## Usage
