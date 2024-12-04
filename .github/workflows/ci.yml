@@ -23,6 +23,10 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
+      - name: Verify the command 
+        run: |
+          node $(jq -r '.bin' package.json) --version
+
 
   publish:
     name: npm-publish
