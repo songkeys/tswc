@@ -9,7 +9,7 @@ const cliBin = path.join(__dirname, '..', 'src', 'cli.ts')
 // const cliBin = path.join(__dirname, '..', 'dist', 'cli.js')
 
 describe('test suite', () => {
-  it('generally work', ({ expect }) => {
+  it('generally works', ({ expect }) => {
     const proc = spawnSync(node, [cliBin], {
       stdio: 'pipe',
     })
@@ -17,12 +17,13 @@ describe('test suite', () => {
     expect(proc.status).toBe(0)
   })
 
-  it('compile some code', ({ expect }) => {
-    // const { stdout } = spawnSync(
+  it('compiles some code', ({ expect }) => {
     const proc = spawnSync(
       node,
       [
         cliBin,
+        '--',
+        // swc args
         path.join(__dirname, 'fixtures', 'src', 'index.ts'),
         '--config-file',
         path.join(__dirname, 'fixtures', 'src', '.swcrc'),
@@ -59,6 +60,27 @@ describe('test suite', () => {
       )
       expect(proc.status).toBe(1)
       expect(proc.stderr.toString()).toMatch(/error: unknown option/)
+    } catch {}
+  })
+  it('throws if the config does not exist', ({ expect }) => {
+    const codePath = path.join(__dirname, 'fixtures', 'src', 'index.ts')
+    try {
+      const proc = spawnSync(
+        node,
+        [
+          cliBin,
+          // swc arguments
+          '--',
+          path.join(__dirname, 'fixtures', 'src', 'index.ts'),
+          '--config-file',
+          path.join(__dirname, 'fixtures', 'src', 'nope.swcrc'),
+        ],
+        { stdio: 'pipe' },
+      )
+      expect(proc.status).toBe(1)
+      expect(proc.stderr.toString()).toMatch(
+        /Invalid option: --config-file. Could not find file:/,
+      )
     } catch {}
   })
 })
