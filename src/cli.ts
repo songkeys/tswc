@@ -75,6 +75,8 @@ cli
         stdio: 'inherit',
         cwd: process.cwd(),
         env: process.env,
+        // Windows does not do spawn well without shell explicitly set
+        shell: process.platform === "win32" ? true : undefined,
       })
     } catch (e) {
       /* istanbul ignore next */

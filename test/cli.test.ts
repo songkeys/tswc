@@ -2,16 +2,19 @@ import { describe, it } from 'vitest'
 import path from 'path'
 import { spawnSync } from 'child_process'
 
-const node = './node_modules/.bin/ts-node'
+const node = path.join('.', 'node_modules', '.bin', 'ts-node');
 const cliBin = path.join(__dirname, '..', 'src', 'cli.ts')
 
 // const node = 'node'
 // const cliBin = path.join(__dirname, '..', 'dist', 'cli.js')
 
+const shell = process.platform === 'win32' ? true : undefined;
+
 describe('test suite', () => {
   it('generally works', ({ expect }) => {
     const proc = spawnSync(node, [cliBin], {
       stdio: 'pipe',
+      shell,
     })
     expect(proc.stdout.toString()).toBeTypeOf('string')
     expect(proc.status).toBe(0)
@@ -28,7 +31,7 @@ describe('test suite', () => {
         '--config-file',
         path.join(__dirname, 'fixtures', 'src', '.swcrc'),
       ],
-      { stdio: 'pipe' },
+      { stdio: 'pipe', shell },
     )
     expect(proc.status).toBe(0)
     expect(proc.stderr.toString()).toMatch('')
@@ -41,7 +44,7 @@ describe('test suite', () => {
       node,
       [cliBin, codePath, '--debug', '--tsconfig', 'tsconfig.json'],
       {
-        stdio: 'pipe',
+        stdio: 'pipe', shell,
       },
     )
     expect(proc.status).toBe(0)
@@ -55,7 +58,7 @@ describe('test suite', () => {
         node,
         [cliBin, codePath, '--', '--random-args-for-error'],
         {
-          stdio: 'pipe',
+          stdio: 'pipe', shell,
         },
       )
       expect(proc.status).toBe(1)
@@ -75,7 +78,7 @@ describe('test suite', () => {
           '--config-file',
           path.join(__dirname, 'fixtures', 'src', 'nope.swcrc'),
         ],
-        { stdio: 'pipe' },
+        { stdio: 'pipe', shell },
       )
       expect(proc.status).toBe(1)
       expect(proc.stderr.toString()).toMatch(
