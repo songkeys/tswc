@@ -8,10 +8,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node-version: [16.x, 18.x, 20.x, 22.x]
+        os: [ ubuntu-latest, 'windows-latest' ]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
       - uses: actions/checkout@v2
@@ -26,7 +27,6 @@ jobs:
       - name: Verify the command 
         run: |
           node $(jq -r '.bin' package.json) --version
-
 
   publish:
     name: npm-publish

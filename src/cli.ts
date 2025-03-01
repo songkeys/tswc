@@ -66,7 +66,8 @@ cli
 
       // compile
       const swcBin = require.resolve('.bin/swc')
-      const swcArgs = [file, ..._swcArgs, '--config-file', SWCRC_PATH]
+      const cleanedSwcArgs = removeDuplicateConfigFileFromArgs(_swcArgs, configFile)
+      const swcArgs = [file, ...cleanedSwcArgs, '--config-file', SWCRC_PATH]
       if (debug) {
         console.log(`> swc ${swcArgs.join(' ')}`)
       }
@@ -74,6 +75,8 @@ cli
         stdio: 'inherit',
         cwd: process.cwd(),
         env: process.env,
+        // Windows does not do spawn well without shell explicitly set
+        shell: process.platform === "win32" ? true : undefined,
       })
     } catch (e) {
       /* istanbul ignore next */
@@ -82,6 +85,26 @@ cli
       fs.unlinkSync(SWCRC_PATH)
     }
   })
+
+  /**
+   * Removes the --config-file option and its value from an array of raw swc args
+   * @param swcArgs 
+   * @param configFileArg - the --config-file value argument that you parsed already
+   * @returns 
+   */
+function removeDuplicateConfigFileFromArgs(swcArgs: string[], configFileArg?: string) {
+  let lastArgWasConfigFile = false
+  return configFileArg ? swcArgs.reduce((cleanArgs: string[], arg: string) => {
+    if (arg === '--config-file') {
+      lastArgWasConfigFile = true
+    } else if (lastArgWasConfigFile && arg === configFileArg) {
+      // We don't push anything here because the second arg is also skipped
+    } else {
+      cleanArgs.push(arg)
+    }
+    return cleanArgs
+  }, [] as string[]) : swcArgs
+}
 
 cli.help()
 
