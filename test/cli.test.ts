@@ -50,40 +50,47 @@ describe('test suite', () => {
     expect(proc.status).toBe(0)
     expect(proc.stdout.toString()).toMatch(/\[debug\] swcrc:/)
   })
-
   it('error throws', ({ expect }) => {
     const codePath = path.join(__dirname, 'fixtures', 'src', 'index.ts')
-    try {
-      const proc = spawnSync(
-        node,
-        [cliBin, codePath, '--', '--random-args-for-error'],
-        {
-          stdio: 'pipe', shell,
-        },
-      )
-      expect(proc.status).toBe(1)
-      expect(proc.stderr.toString()).toMatch(/error: unknown option/)
-    } catch {}
+    const proc = spawnSync(
+      node,
+      [cliBin, codePath, '--', '--random-args-for-error'],
+      {
+        stdio: 'pipe', shell,
+      },
+    )
+    expect(proc.status).toBe(1)
+    expect(proc.stderr.toString()).toMatch(/error: unknown option/)
+  })
+  it('propagates the error code of swc', ({ expect }) => {
+    const codePath = path.join(__dirname, 'fixtures', 'src', 'bad.ts')
+    const proc = spawnSync(
+      node,
+      [cliBin, codePath, '--tsconfig', 'tsconfig.json'],
+      {
+        stdio: 'pipe', shell,
+      },
+    )
+    expect(proc.status).toBe(1)
+    expect(proc.stderr.toString()).toMatch(/Syntax Error/)
   })
   it('throws if the config does not exist', ({ expect }) => {
     const codePath = path.join(__dirname, 'fixtures', 'src', 'index.ts')
-    try {
-      const proc = spawnSync(
-        node,
-        [
-          cliBin,
-          // swc arguments
-          '--',
-          path.join(__dirname, 'fixtures', 'src', 'index.ts'),
-          '--config-file',
-          path.join(__dirname, 'fixtures', 'src', 'nope.swcrc'),
-        ],
-        { stdio: 'pipe', shell },
-      )
-      expect(proc.status).toBe(1)
-      expect(proc.stderr.toString()).toMatch(
-        /Invalid option: --config-file. Could not find file:/,
-      )
-    } catch {}
+    const proc = spawnSync(
+      node,
+      [
+        cliBin,
+        // swc arguments
+        '--',
+        codePath,
+        '--config-file',
+        path.join(__dirname, 'fixtures', 'src', 'nope.swcrc'),
+      ],
+      { stdio: 'pipe', shell },
+    )
+    expect(proc.status).toBe(1)
+    expect(proc.stderr.toString()).toMatch(
+      /Invalid option: --config-file. Could not find file:/,
+    )
   })
 })

@@ -29,7 +29,7 @@ cli
     const { tsconfig, debug } = options
     const _swcArgs = options['--']
     // parse shared swc args here
-    const swcParsedArgs = expectedSwcCli.parse(_swcArgs) as {
+    const swcParsedArgs = expectedSwcCli.parse(["swc", ..._swcArgs]) as {
       options: {
         configFile?: string
       }
@@ -40,9 +40,11 @@ cli
     if (configFile) {
       oSwcrcPath = path.resolve(process.cwd(), configFile)
       if (!fs.existsSync(oSwcrcPath)) {
-        throw new Error(
+        console.error(
           `Invalid option: --config-file. Could not find file: ${oSwcrcPath}`,
         )
+        process.exitCode = 1;
+        return;
       }
     } else {
       oSwcrcPath = path.resolve(process.cwd(), '.swcrc')
@@ -71,16 +73,21 @@ cli
       if (debug) {
         console.log(`> swc ${swcArgs.join(' ')}`)
       }
-      spawnSync(swcBin, swcArgs, {
+      const results = spawnSync(swcBin, swcArgs, {
         stdio: 'inherit',
         cwd: process.cwd(),
         env: process.env,
         // Windows does not do spawn well without shell explicitly set
         shell: process.platform === "win32" ? true : undefined,
       })
+      // Propagate the status code to this program
+      if (results.status) {
+        process.exitCode = results.status
+      }
     } catch (e) {
       /* istanbul ignore next */
       console.error(e)
+      process.exitCode = 1;
     } finally {
       fs.unlinkSync(SWCRC_PATH)
     }
