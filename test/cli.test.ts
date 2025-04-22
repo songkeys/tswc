@@ -12,7 +12,7 @@ const shell = process.platform === 'win32' ? true : undefined;
 
 describe('test suite', () => {
   it('generally works', ({ expect }) => {
-    const proc = spawnSync(node, [cliBin], {
+    const proc = spawnSync(node, [cliBin, '--help'], {
       stdio: 'pipe',
       shell,
     })
