@@ -73,16 +73,21 @@ cli
       if (debug) {
         console.log(`> swc ${swcArgs.join(' ')}`)
       }
-      spawnSync(swcBin, swcArgs, {
+      const results = spawnSync(swcBin, swcArgs, {
         stdio: 'inherit',
         cwd: process.cwd(),
         env: process.env,
         // Windows does not do spawn well without shell explicitly set
         shell: process.platform === "win32" ? true : undefined,
       })
+      // Propagate the status code to this program
+      if (results.status) {
+        process.exitCode = results.status
+      }
     } catch (e) {
       /* istanbul ignore next */
       console.error(e)
+      process.exitCode = 1;
     } finally {
       fs.unlinkSync(SWCRC_PATH)
     }

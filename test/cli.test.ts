@@ -50,7 +50,6 @@ describe('test suite', () => {
     expect(proc.status).toBe(0)
     expect(proc.stdout.toString()).toMatch(/\[debug\] swcrc:/)
   })
-
   it('error throws', ({ expect }) => {
     const codePath = path.join(__dirname, 'fixtures', 'src', 'index.ts')
     const proc = spawnSync(
@@ -62,6 +61,18 @@ describe('test suite', () => {
     )
     expect(proc.status).toBe(1)
     expect(proc.stderr.toString()).toMatch(/error: unknown option/)
+  })
+  it('propagates the error code of swc', ({ expect }) => {
+    const codePath = path.join(__dirname, 'fixtures', 'src', 'bad.ts')
+    const proc = spawnSync(
+      node,
+      [cliBin, codePath, '--tsconfig', 'tsconfig.json'],
+      {
+        stdio: 'pipe', shell,
+      },
+    )
+    expect(proc.status).toBe(1)
+    expect(proc.stderr.toString()).toMatch(/Syntax Error/)
   })
   it('throws if the config does not exist', ({ expect }) => {
     const codePath = path.join(__dirname, 'fixtures', 'src', 'index.ts')
